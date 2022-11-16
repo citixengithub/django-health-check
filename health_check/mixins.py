@@ -1,5 +1,6 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
+import pdb
 
 from health_check.conf import HEALTH_CHECK
 from health_check.exceptions import ServiceWarning
@@ -39,6 +40,10 @@ class CheckMixin:
                 from django.db import connections
 
                 connections.close_all()
+        
+        for plugin in self.plugins:
+            pdb.set_trace()
+            _run(plugin)
 
         with ThreadPoolExecutor(max_workers=len(self.plugins) or 1) as executor:
             for plugin in executor.map(_run, self.plugins):
